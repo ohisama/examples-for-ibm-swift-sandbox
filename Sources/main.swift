@@ -1,24 +1,51 @@
 
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
+import Socket
 import Foundation
-import Glibc
-import SwiftSockets
 
-func main(args:[String:Any]) -> [String:Any] {
-    print("ok0 ")
-    var result:[String:Any]?
-    let socket = ActiveSocket<sockaddr_in>()! .onRead { 
-    	sock, _ in
-    	let (count, block, errno) = sock.read() 
-    	guard count > 0 else {
-      		print("EOF, or great error handling \(errno).")
-      		return
-    	}
-    	print("Answer to ring,ring is: \(count) bytes: \(block)")
-  	}
-  	.connect("127.0.0.1:80") { 
-  		socket in socket.write("Ring, ring!\r\n")
-  	}
-  	result = "ok"
-    print("ok1 ")
-    return result!
+class EchoClient {
+
+    let bufferSize = 1024
+    let port: Int
+    let server: String
+    var listenSocket: Socket? = nil
+
+    init(port: Int, server: String) {
+        self.port = port
+        self.server = server
+    }
+    
+    deinit {
+        listenSocket?.close()
+    }
+
+    func start() throws {
+      let socket = try Socket.create() 
+      listenSocket = socket
+      try socket.connect(to: server, port: Int32(port))
+      var dataRead = Data(capacity: bufferSize)
+      var cont = true
+       repeat {
+          print("Enter Text:")
+          if let entered = readLine(strippingNewline: true) {
+            try socket.write(from: entered)
+            if entered.hasPrefix("quit") {
+               cont = false
+            }
+            let bytesRead = try socket.read(into: &dataRead)
+            if bytesRead > 0 {
+              if let readStr = String(data: dataRead, encoding: .utf8) {
+                print("Received: '\(readStr)'")
+              }
+              dataRead.count = 0
+            }
+          }
+       } while cont
+    }
 }
+var echoClient = EchoClient(port: 3333, server: "127.0.0.1")
+echoClient.start()
