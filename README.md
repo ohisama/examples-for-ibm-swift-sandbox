@@ -1,15 +1,14 @@
 # examples-for-ibm-swift-sandbox
 
-Example code and package settings for `IBM Swift Sandbox` using 3’d party packages like `SwiftyJson`.
+Example code and package settings for `IBM Swift Sandbox` using 3’d party packages.
 
-`IBM Swift Sandbox` で `SwiftyJson` のようなサードパーティのパッケージ（ライブラリ）を使用するサンプルです。
+`IBM Swift Sandbox` でサードパーティのパッケージ（ライブラリ）を使用するサンプルです。
 
-![](./images/result.png)
 
 ## Demo
 Access the following link and then execute it.
 
-https://swiftlang.ng.bluemix.net/#/repl?gitPackage=https:%2F%2Fgithub.com%2Fnaokits%2Fexamples-for-ibm-swift-sandbox.git&swiftVersion=swift-DEVELOPMENT-2016-05-09-a-ubuntu15.10
+https://swiftlang.ng.bluemix.net/#/repl?gitPackage=https:%2F%2Fgithub.com%2Fohisama%2Fexamples-for-ibm-swift-sandbox.git
 
 Note: Do not change value of `gitPackage` and `swiftVersion` parameters.
 
@@ -17,44 +16,6 @@ Note: Do not change value of `gitPackage` and `swiftVersion` parameters.
 
 A simple code and settings that shows how to use 3'd party packages.
 
-Sources/main.swift
-```swift
-import Foundation
-import SwiftyJSON
-
-func JSONExample() {
-    let json = JSON(["name":"naokits", "age": 50])
-
-    if let name = json["name"].string {
-        print(name)
-    }
-
-    if let age = json["age"].int {
-        print(age)
-    }
-}
-
-...
-```
-
-.swift-version
-```
-DEVELOPMENT-SNAPSHOT-2016-05-09-a
-```
-
-packages.swift
-```swift
-import PackageDescription
-
-let package = Package(
-    name: "examples-for-ibm-swift-sandbox",
-    dependencies: [
-        .Package(url: "https://github.com/IBM-Swift/SwiftyJSON.git", majorVersion: 8),
-        .Package(url: "https://github.com/IBM-Swift/BlueCryptor.git", majorVersion: 0, minor: 2),
-        .Package(url: "https://github.com/IBM-Swift/HeliumLogger.git", majorVersion: 0, minor: 9),
-    ]
-)
-```
 
 
 ### importants

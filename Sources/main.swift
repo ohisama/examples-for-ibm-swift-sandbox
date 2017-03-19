@@ -1,43 +1,24 @@
 
-import KituraNet
-import Dispatch
 import Foundation
-import SwiftyJSON
+import Glibc
+import SwiftSockets
 
 func main(args:[String:Any]) -> [String:Any] {
-    var str = "No response"
-    dispatch_sync(dispatch_get_global_queue(0, 0)) {
-        HTTP.get("https://httpbin.org/get") { response in
-            do 
-            {
-                str = try response!.readString()!
-            } 
-            catch 
-            {
-                print("Error \(error)")
-            }
-        }
-    }
-    print("Got string \(str)")
+    print("ok0 ")
     var result:[String:Any]?
-    let data = str.data(using: NSUTF8StringEncoding, allowLossyConversion: true)!
-    let json = JSON(data: data)
-    if let jsonUrl = json["url"].string 
-    {
-        print("Got json url \(jsonUrl)")
-    }
-    else 
-    {
-        print("JSON DID NOT PARSE")
-    }
-    do 
-    {
-        result = try NSJSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-    }
-    catch 
-    {
-        print("Error \(error)")
-    }
-    print("Result is \(result!)")
+    let socket = ActiveSocket<sockaddr_in>()! .onRead { 
+    	sock, _ in
+    	let (count, block, errno) = sock.read() 
+    	guard count > 0 else {
+      		print("EOF, or great error handling \(errno).")
+      		return
+    	}
+    	print("Answer to ring,ring is: \(count) bytes: \(block)")
+  	}
+  	.connect("127.0.0.1:80") { 
+  		socket in socket.write("Ring, ring!\r\n")
+  	}
+  	result = "ok"
+    print("ok1 ")
     return result!
 }
